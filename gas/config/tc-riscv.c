@@ -28,10 +28,13 @@
 #include "itbl-ops.h"
 #include "dwarf2dbg.h"
 #include "dw2gencfi.h"
+#include "struc-symbol.h" /* TODO (PULP): Check why neccessary */
 
 #include "bfd/elfxx-riscv.h"
 #include "elf/riscv.h"
 #include "opcode/riscv.h"
+
+#define _WITH_PULP_CHIP_INFO_FUNCT_ /* TODO (PULP): Check why neccessary */
 
 #include <stdint.h>
 
@@ -190,6 +193,13 @@ static struct riscv_set_options riscv_opts =
   0.	/* csr_check */
 };
 
+/* PULP related */
+static struct Pulp_Target_Chip Pulp_Chip = {PULP_CHIP_NONE, PULP_NONE, -1, -1, -1, -1, -1};
+
+static void pulp_set_chip(const char *arg);
+static void pulp_add_chip_info(void);
+
+
 static void
 riscv_set_rvc (bfd_boolean rvc_value)
 {
@@ -234,6 +244,12 @@ riscv_multi_subset_supports (enum riscv_insn_class insn_class)
       return riscv_subset_supports ("f") && riscv_subset_supports ("c");
 
     case INSN_CLASS_Q: return riscv_subset_supports ("q");
+
+    case INSN_CLASS_P0:  return riscv_subset_supports ("Xpulpv0");
+    case INSN_CLASS_P1:  return riscv_subset_supports ("Xpulpv1");
+    case INSN_CLASS_P2:  return riscv_subset_supports ("Xpulpv2");
+    case INSN_CLASS_GAP: return riscv_subset_supports ("Xgap");
+    case INSN_CLASS_P3:  return riscv_subset_supports ("Xpulpv3");
 
     default:
       as_fatal ("Unreachable");
@@ -939,6 +955,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case ',': break;
       case '(': break;
       case ')': break;
+      case '!': break;
       case '<': USE_BITS (OP_MASK_SHAMTW,	OP_SH_SHAMTW);	break;
       case '>':	USE_BITS (OP_MASK_SHAMT,	OP_SH_SHAMT);	break;
       case 'A': break;
@@ -1096,6 +1113,56 @@ md_begin (void)
 
   /* Set the default alignment for the text section.  */
   record_alignment (text_section, riscv_opts.rvc ? 1 : 2);
+}
+
+#define PULPINFO_NAME "Pulp_Info"
+#define PULPINFO_NAMESZ 10
+#define PULPINFO_TYPE 1
+
+/* TODO (PULP): Add comment */
+static void 
+pulp_add_chip_info (void)
+{
+        segT Pulp_Chip_Info;
+        segT old_section = now_seg;
+        int old_subsection = now_subseg;
+        char *p;
+        char LineBuffer[512];
+        unsigned int Len=0;
+        char *Msg = NULL;
+
+        PulpChipInfoImage(&Pulp_Chip, LineBuffer);
+        Len = strlen(LineBuffer);
+        Msg = (char *) xmalloc(Len+5);
+        strcpy(Msg, LineBuffer);
+        Len++;
+        do Msg[Len++] = 0; while ((Len & 3) != 0);
+
+        Pulp_Chip_Info = subseg_new(".Pulp_Chip.Info", 0);
+        bfd_set_section_flags(stdoutput, Pulp_Chip_Info, SEC_READONLY | SEC_HAS_CONTENTS);
+
+        /* Follow the standard note section layout: First write the length of the name string.  */
+        p = frag_more(4);
+        md_number_to_chars (p, (valueT) PULPINFO_NAMESZ, 4);
+
+        /* Next comes the length of the "descriptor", i.e., the actual data.  */
+        p = frag_more(4);
+        md_number_to_chars (p, (valueT) Len, 4);
+
+        /* Write the note type.  */
+        p = frag_more(4);
+        md_number_to_chars (p, (valueT) PULPINFO_TYPE, 4);
+
+        /* Write the name field.  */
+        p = frag_more (PULPINFO_NAMESZ);
+        memcpy (p, PULPINFO_NAME, PULPINFO_NAMESZ);
+
+        /* Finally, write the descriptor.  */
+        p = frag_more (Len);
+        memcpy (p, Msg, Len);
+
+        free(Msg);
+        subseg_set (old_section, old_subsection);
 }
 
 static insn_t
@@ -1543,7 +1610,7 @@ static const struct percent_op_match percent_op_itype[] =
 {
   {"%lo", BFD_RELOC_RISCV_LO12_I},
   {"%tprel_lo", BFD_RELOC_RISCV_TPREL_LO12_I},
-  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_I},
+  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_I}, /*TODO (PULP): Add tiny reloc */
   {0, 0}
 };
 
@@ -1551,7 +1618,7 @@ static const struct percent_op_match percent_op_stype[] =
 {
   {"%lo", BFD_RELOC_RISCV_LO12_S},
   {"%tprel_lo", BFD_RELOC_RISCV_TPREL_LO12_S},
-  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_S},
+  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_S}, /*TODO (PULP): Add tiny reloc */
   {0, 0}
 };
 
@@ -2185,6 +2252,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	    case ')':
 	    case '[':
 	    case ']':
+            case '!':
 	      if (*s++ == *args)
 		continue;
 	      break;
@@ -2614,7 +2682,7 @@ enum options
   OPTION_CSR_CHECK,
   OPTION_NO_CSR_CHECK,
   OPTION_MISA_SPEC,
-  OPTION_MPRIV_SPEC,
+  OPTION_MPRIV_SPEC, /* TODO (PULP): Check PULP options */
   OPTION_END_OF_ENUM
 };
 
@@ -2848,7 +2916,7 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
       relaxable = TRUE;
       break;
 
-    case BFD_RELOC_RISCV_GOT_HI20:
+    case BFD_RELOC_RISCV_GOT_HI20: /* TODO (PULP): Add pulp relocs */
     case BFD_RELOC_RISCV_ADD8:
     case BFD_RELOC_RISCV_ADD16:
     case BFD_RELOC_RISCV_ADD32:
@@ -3004,6 +3072,39 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
 	  bfd_vma delta = target - md_pcrel_from (fixP);
 	  bfd_putl32 (bfd_getl32 (buf) | ENCODE_UJTYPE_IMM (delta), buf);
 	}
+      break;
+
+    /* PULP Hardware loop reloc */
+    case BFD_RELOC_RISCV_REL12:
+      if (fixP->fx_addsy)
+        {
+          reloc_howto_type *howto = bfd_reloc_type_lookup (stdoutput, fixP->fx_r_type);
+          bfd_reloc_status_type r;
+
+          /* This reloc is local, always resolvable, S_GET_VALUE returns an error in case not resolvable */
+          bfd_vma target = S_GET_VALUE (fixP->fx_addsy) + *valP;
+          bfd_vma delta = (target - md_pcrel_from (fixP)) >> howto->rightshift;
+          r = bfd_check_overflow (howto->complain_on_overflow, 12, 0, 32, delta);
+          if (r==bfd_reloc_overflow)
+                as_fatal (_("BFD_RELOC_RISCV_REL12 Overflow: Disp=%d"), (int) delta);
+          bfd_putl32 (bfd_getl32 (buf) | ENCODE_ITYPE_IMM (delta), buf);
+        }
+      break;
+
+    case BFD_RELOC_RISCV_RELU5:
+      if (fixP->fx_addsy)
+        {
+          reloc_howto_type *howto = bfd_reloc_type_lookup (stdoutput, fixP->fx_r_type);
+          bfd_reloc_status_type r;
+
+          /* This reloc is local, always resolvable, S_GET_VALUE returns an error in case not resolvable */
+          bfd_vma target = S_GET_VALUE (fixP->fx_addsy) + *valP;
+          bfd_vma delta = (target - md_pcrel_from (fixP)) >> howto->rightshift;
+          r = bfd_check_overflow (howto->complain_on_overflow, 5, 0, 32, delta);
+          if (r==bfd_reloc_overflow)
+                as_fatal (_("BFD_RELOC_RISCV_RELU5 Overflow: Disp=%d"), (int) delta);
+          bfd_putl32 (bfd_getl32 (buf) | ENCODE_I1TYPE_UIMM (delta), buf);
+        }
       break;
 
     case BFD_RELOC_12_PCREL:
@@ -3506,7 +3607,7 @@ RISC-V options:\n\
   -mno-relax                  disable relax\n\
   -march-attr                 generate RISC-V arch attribute\n\
   -mno-arch-attr              don't generate RISC-V arch attribute\n\
-"));
+"));  /* TODO (PULP): check PULP options */
 }
 
 /* Standard calling conventions leave the CFA at SP on entry.  */
@@ -3533,6 +3634,12 @@ tc_riscv_regname_to_dw2regnum (char *regname)
 
   as_bad (_("unknown register `%s'"), regname);
   return -1;
+}
+
+void
+pulp_md_end (void)
+{
+  pulp_add_chip_info();
 }
 
 void
