@@ -25,6 +25,16 @@ fragment <<EOF
 #include "elf/riscv.h"
 #include "elfxx-riscv.h"
 
+#define _WITH_PULP_CHIP_INFO_FUNCT_
+
+static int TRACE = 0;
+
+static int Warn_Chip_Info = 0;
+static int Error_Chip_Info = 0;
+
+static struct Pulp_Target_Chip Pulp_Chip = {PULP_CHIP_NONE, PULP_NONE, -1, -1, -1, -1, -1};
+static struct Pulp_Target_Chip DefChipInfo = {PULP_CHIP_NONE, PULP_NONE, 0, 1, 1024*256, 64*1024, 0};
+
 static void
 riscv_elf_before_allocation (void)
 {

@@ -1,3 +1,7 @@
+2020-08-21  Mary Bennett  <mary.bennett@embecosm.com>
+
+	* riscv-opc.c (riscv_opcodes): Added PULP hardware loop instructions.
+
 2020-08-12  Alex Coplan  <alex.coplan@arm.com>
 
 	* aarch64-opc.c (aarch64_sys_regs): Add MPAM registers.

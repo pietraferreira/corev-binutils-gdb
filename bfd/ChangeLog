@@ -1,3 +1,8 @@
+2020-08-21  Mary Bennett <mary.bennett@embecosm.com>
+
+	* elfnn-riscv.c: Added relocations for PULP hardware loop.
+	* elfxx-riscv.c: Likewise.
+
 2020-08-15  Alan Modra  <amodra@gmail.com>
 
 	* elf32-frv.c (elf32_frv_add_symbol_hook): Set SEC_SMALL_DATA on

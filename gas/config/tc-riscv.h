@@ -117,6 +117,9 @@ extern int tc_riscv_regname_to_dw2regnum (char *);
 #define elf_tc_final_processing riscv_elf_final_processing
 extern void riscv_elf_final_processing (void);
 
+extern void pulp_md_end (void);
+#define md_end() pulp_md_end()
+
 /* Adjust debug_line after relaxation.  */
 #define DWARF2_USE_FIXED_ADVANCE_PC 1
 
