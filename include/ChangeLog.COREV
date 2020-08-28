@@ -1,0 +1,5 @@
+2020-08-28  Jessica Mills  <jessica.mills@embecosm.com>
+
+	* elf/riscv.h: Added CORE-V hardware loop specific relocations.
+	* opcode/riscv.h: Added CORE-V hardware loop specific masks and
+	CORE-V instruction class.

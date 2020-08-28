@@ -1,0 +1,3 @@
+2020-08-28  Jessica Mills  <jessica.mills@embecosm.com>
+
+	* bfd-in2.h: Added CORE-V hardware loop specific relocations.
