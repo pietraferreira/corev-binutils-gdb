@@ -1,0 +1,3 @@
+2020-08-28  Jessica Mills  <jessica.mills@embecosm.com>
+
+	* emultempl/riscvelf.em: Added CORE-V hardware loop support.

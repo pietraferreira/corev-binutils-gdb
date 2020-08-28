@@ -28,13 +28,10 @@
 #include "itbl-ops.h"
 #include "dwarf2dbg.h"
 #include "dw2gencfi.h"
-#include "struc-symbol.h" /* TODO (PULP): Check why neccessary */
 
 #include "bfd/elfxx-riscv.h"
 #include "elf/riscv.h"
 #include "opcode/riscv.h"
-
-#define _WITH_PULP_CHIP_INFO_FUNCT_ /* TODO (PULP): Check why neccessary */
 
 #include <stdint.h>
 
@@ -193,13 +190,6 @@ static struct riscv_set_options riscv_opts =
   0.	/* csr_check */
 };
 
-/* PULP related */
-static struct Pulp_Target_Chip Pulp_Chip = {PULP_CHIP_NONE, PULP_NONE, -1, -1, -1, -1, -1};
-
-static void pulp_set_chip(const char *arg);
-static void pulp_add_chip_info(void);
-
-
 static void
 riscv_set_rvc (bfd_boolean rvc_value)
 {
@@ -239,17 +229,12 @@ riscv_multi_subset_supports (enum riscv_insn_class insn_class)
     case INSN_CLASS_D: return riscv_subset_supports ("d");
     case INSN_CLASS_D_AND_C:
       return riscv_subset_supports ("d") && riscv_subset_supports ("c");
-
+    /* TODO : IS THIS CORRECT */
+    case INSN_CLASS_COREV:  return riscv_subset_supports ("xpulpv");
     case INSN_CLASS_F_AND_C:
       return riscv_subset_supports ("f") && riscv_subset_supports ("c");
 
     case INSN_CLASS_Q: return riscv_subset_supports ("q");
-
-    case INSN_CLASS_P0:  return riscv_subset_supports ("Xpulpv0");
-    case INSN_CLASS_P1:  return riscv_subset_supports ("Xpulpv1");
-    case INSN_CLASS_P2:  return riscv_subset_supports ("Xpulpv2");
-    case INSN_CLASS_GAP: return riscv_subset_supports ("Xgap");
-    case INSN_CLASS_P3:  return riscv_subset_supports ("Xpulpv3");
 
     default:
       as_fatal ("Unreachable");
@@ -955,7 +940,6 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case ',': break;
       case '(': break;
       case ')': break;
-      case '!': break;
       case '<': USE_BITS (OP_MASK_SHAMTW,	OP_SH_SHAMTW);	break;
       case '>':	USE_BITS (OP_MASK_SHAMT,	OP_SH_SHAMT);	break;
       case 'A': break;
@@ -967,7 +951,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case 'S':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	break;
       case 'U':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	/* fallthru */
       case 'T':	USE_BITS (OP_MASK_RS2,		OP_SH_RS2);	break;
-      case 'd':	USE_BITS (OP_MASK_RD,		OP_SH_RD);	break;
+      case 'd':	USE_BITS (OP_MASK_RD,		OP_SH_RD);	if (*p == 'i') ++p; break;
       case 'm':	USE_BITS (OP_MASK_RM,		OP_SH_RM);	break;
       case 's':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	break;
       case 't':	USE_BITS (OP_MASK_RS2,		OP_SH_RS2);	break;
@@ -975,7 +959,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case 'P':	USE_BITS (OP_MASK_PRED,		OP_SH_PRED); break;
       case 'Q':	USE_BITS (OP_MASK_SUCC,		OP_SH_SUCC); break;
       case 'o':
-      case 'j': used_bits |= ENCODE_ITYPE_IMM (-1U); break;
+      case 'j': used_bits |= ENCODE_ITYPE_IMM (-1U); if (*p == 'i') ++p; break;
       case 'a':	used_bits |= ENCODE_UJTYPE_IMM (-1U); break;
       case 'p':	used_bits |= ENCODE_SBTYPE_IMM (-1U); break;
       case 'q':	used_bits |= ENCODE_STYPE_IMM (-1U); break;
@@ -984,6 +968,15 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case '[': break;
       case ']': break;
       case '0': break;
+      /* TODO : MAY NOT NEED ALL OF THESE */
+      case 'b':
+                if (*p == '1') {
+                        used_bits |= ENCODE_ITYPE_IMM(-1U); /* For loop I type pc rel displacement */
+                        ++p; break;
+                } else if (*p == '2') {
+                        used_bits |= ENCODE_I1TYPE_UIMM(-1U); /* For loop I1 type pc rel displacement */
+                        ++p; break;
+                }
       case '1': break;
       case 'F': /* funct */
 	switch (c = *p++)
@@ -1113,56 +1106,6 @@ md_begin (void)
 
   /* Set the default alignment for the text section.  */
   record_alignment (text_section, riscv_opts.rvc ? 1 : 2);
-}
-
-#define PULPINFO_NAME "Pulp_Info"
-#define PULPINFO_NAMESZ 10
-#define PULPINFO_TYPE 1
-
-/* TODO (PULP): Add comment */
-static void 
-pulp_add_chip_info (void)
-{
-        segT Pulp_Chip_Info;
-        segT old_section = now_seg;
-        int old_subsection = now_subseg;
-        char *p;
-        char LineBuffer[512];
-        unsigned int Len=0;
-        char *Msg = NULL;
-
-        PulpChipInfoImage(&Pulp_Chip, LineBuffer);
-        Len = strlen(LineBuffer);
-        Msg = (char *) xmalloc(Len+5);
-        strcpy(Msg, LineBuffer);
-        Len++;
-        do Msg[Len++] = 0; while ((Len & 3) != 0);
-
-        Pulp_Chip_Info = subseg_new(".Pulp_Chip.Info", 0);
-        bfd_set_section_flags(stdoutput, Pulp_Chip_Info, SEC_READONLY | SEC_HAS_CONTENTS);
-
-        /* Follow the standard note section layout: First write the length of the name string.  */
-        p = frag_more(4);
-        md_number_to_chars (p, (valueT) PULPINFO_NAMESZ, 4);
-
-        /* Next comes the length of the "descriptor", i.e., the actual data.  */
-        p = frag_more(4);
-        md_number_to_chars (p, (valueT) Len, 4);
-
-        /* Write the note type.  */
-        p = frag_more(4);
-        md_number_to_chars (p, (valueT) PULPINFO_TYPE, 4);
-
-        /* Write the name field.  */
-        p = frag_more (PULPINFO_NAMESZ);
-        memcpy (p, PULPINFO_NAME, PULPINFO_NAMESZ);
-
-        /* Finally, write the descriptor.  */
-        p = frag_more (Len);
-        memcpy (p, Msg, Len);
-
-        free(Msg);
-        subseg_set (old_section, old_subsection);
 }
 
 static insn_t
@@ -1610,7 +1553,7 @@ static const struct percent_op_match percent_op_itype[] =
 {
   {"%lo", BFD_RELOC_RISCV_LO12_I},
   {"%tprel_lo", BFD_RELOC_RISCV_TPREL_LO12_I},
-  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_I}, /*TODO (PULP): Add tiny reloc */
+  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_I},
   {0, 0}
 };
 
@@ -1618,7 +1561,7 @@ static const struct percent_op_match percent_op_stype[] =
 {
   {"%lo", BFD_RELOC_RISCV_LO12_S},
   {"%tprel_lo", BFD_RELOC_RISCV_TPREL_LO12_S},
-  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_S}, /*TODO (PULP): Add tiny reloc */
+  {"%pcrel_lo", BFD_RELOC_RISCV_PCREL_LO12_S},
   {0, 0}
 };
 
@@ -2252,7 +2195,6 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	    case ')':
 	    case '[':
 	    case ']':
-            case '!':
 	      if (*s++ == *args)
 		continue;
 	      break;
@@ -2347,6 +2289,12 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      INSERT_OPERAND (RS1, *ip, regno);
 		      break;
 		    case 'd':
+                      if (args[1]=='i') {
+                          ++args;
+                          if (regno>1)
+                                as_fatal (_("internal error: wrong loop number argument: x%d, range:[x0,x1]"),
+                                          (int) regno);
+                      }
 		      INSERT_OPERAND (RD, *ip, regno);
 		      break;
 		    case 't':
@@ -2411,7 +2359,52 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      *imm_reloc = BFD_RELOC_32;
 	      s = expr_end;
 	      continue;
-
+	    /* TODO: COREV MAY NOT NEED ALL OF THESE */
+	    case 'b':
+                /* b1: pc rel 12 bits offset for lp.starti and lp.endi sign-extended immediate as pc rel displacement for hwloop
+                   b2: pc rel 5 bits unsigned offset for lp.setupi
+                   b3: 5 bits immediate for scallimm
+                   b5: 5 bits unsigned immediate bits[29..25]
+                   bi: 5 bits unsigned immediate bits[24..20]
+                   bI: 5 bits signed immediate bits[24..20]
+                   bs: 6 bits signed immediate for vector instructions
+                   bu: 6 bits unsigned immediate for vector instructions
+                   bU: 6 bits unsigned imm
+                   bf: 1 bit unsigned imm
+                   bF: 2 bits unsigned imm
+                 */
+              if (args[1]=='1') {
+                char *saved_s=s;
+                ++args;
+                my_getExpression (imm_expr, s);
+                s = expr_end;
+                if (imm_expr->X_op == O_constant) {
+                        if (imm_expr->X_add_number < 0 || ((imm_expr->X_add_number>>1) > 0x0FFF))
+                                as_fatal (_("internal error: %s constant too large for lp.start/lp.endi, range:[0, %d]"),
+                                  saved_s, 0x1FFF);
+			if ((imm_expr->X_add_number % 2) == 1) {
+                                as_warn (_("constant for lp.start/lp.endi must be even: %d trancated to %d"),
+                                  imm_expr->X_add_number, imm_expr->X_add_number-1);
+				imm_expr->X_add_number--;
+			}
+                        INSERT_OPERAND (IMM12, *ip, (imm_expr->X_add_number>>1));
+                } else *imm_reloc = BFD_RELOC_RISCV_REL12;
+              } else if (args[1]=='2') {
+                char *saved_s=s;
+                ++args;
+                my_getExpression (imm_expr, s);
+                s = expr_end;
+                if (imm_expr->X_op == O_constant) {
+                        if (imm_expr->X_add_number < 0 || ((imm_expr->X_add_number>>1) > 31))
+                                as_fatal (_("internal error: %s constant too large for lp.setupi, range:[0, %d]"),
+                                  saved_s, 63);
+                        INSERT_OPERAND (IMM5, *ip, (imm_expr->X_add_number>>1));
+                } else *imm_reloc = BFD_RELOC_RISCV_RELU5;
+              } else {
+                my_getExpression (imm_expr, s);
+                s = expr_end;
+	      }
+              continue;
 	    case 'B':
 	      my_getExpression (imm_expr, s);
 	      normalize_constant_expr (imm_expr);
@@ -2422,11 +2415,27 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	        *imm_reloc = BFD_RELOC_32;
 	      s = expr_end;
 	      continue;
-
+	    /* TODO : Put this is for ji pulp */
 	    case 'j': /* Sign-extended immediate.  */
-	      p = percent_op_itype;
-	      *imm_reloc = BFD_RELOC_RISCV_LO12_I;
-	      goto alu_op;
+	      if (args[1]=='i') {
+                /* immediate loop count, we don't want to use BFD_RELOC_RISCV_LO12_I to avoid colliding with relaxation */
+                char *saved_s=s;
+                ++args;
+                my_getExpression (imm_expr, s);
+                check_absolute_expr (ip, imm_expr, FALSE); /* TODO : MADE THIS FALSE? */
+                s = expr_end;
+                if (imm_expr->X_op != O_constant || imm_expr->X_add_number >= (signed)RISCV_IMM_REACH ||
+                    imm_expr->X_add_number < 0)
+                        as_fatal (_("internal error: non constant or too large lsetupi loop count %s, range:[0, %d["),
+                                  saved_s, (int) RISCV_IMM_REACH);
+
+                INSERT_OPERAND (IMM12, *ip, imm_expr->X_add_number);
+                continue;
+              } else {
+	        p = percent_op_itype;
+	        *imm_reloc = BFD_RELOC_RISCV_LO12_I;
+	        goto alu_op;
+	      }
 	    case 'q': /* Store displacement.  */
 	      p = percent_op_stype;
 	      *imm_reloc = BFD_RELOC_RISCV_LO12_S;
@@ -2682,7 +2691,7 @@ enum options
   OPTION_CSR_CHECK,
   OPTION_NO_CSR_CHECK,
   OPTION_MISA_SPEC,
-  OPTION_MPRIV_SPEC, /* TODO (PULP): Check PULP options */
+  OPTION_MPRIV_SPEC,
   OPTION_END_OF_ENUM
 };
 
@@ -2916,7 +2925,7 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
       relaxable = TRUE;
       break;
 
-    case BFD_RELOC_RISCV_GOT_HI20: /* TODO (PULP): Add pulp relocs */
+    case BFD_RELOC_RISCV_GOT_HI20:
     case BFD_RELOC_RISCV_ADD8:
     case BFD_RELOC_RISCV_ADD16:
     case BFD_RELOC_RISCV_ADD32:
@@ -3074,7 +3083,6 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
 	}
       break;
 
-    /* PULP Hardware loop reloc */
     case BFD_RELOC_RISCV_REL12:
       if (fixP->fx_addsy)
         {
@@ -3090,7 +3098,6 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
           bfd_putl32 (bfd_getl32 (buf) | ENCODE_ITYPE_IMM (delta), buf);
         }
       break;
-
     case BFD_RELOC_RISCV_RELU5:
       if (fixP->fx_addsy)
         {
@@ -3607,7 +3614,7 @@ RISC-V options:\n\
   -mno-relax                  disable relax\n\
   -march-attr                 generate RISC-V arch attribute\n\
   -mno-arch-attr              don't generate RISC-V arch attribute\n\
-"));  /* TODO (PULP): check PULP options */
+"));
 }
 
 /* Standard calling conventions leave the CFA at SP on entry.  */
@@ -3634,12 +3641,6 @@ tc_riscv_regname_to_dw2regnum (char *regname)
 
   as_bad (_("unknown register `%s'"), regname);
   return -1;
-}
-
-void
-pulp_md_end (void)
-{
-  pulp_add_chip_info();
 }
 
 void
