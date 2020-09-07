@@ -1,3 +1,8 @@
+2020-09-07  Jessica Mills  <jessica.mills@embecosm.com>
+
+	* opcode/riscv.h: Added macros for unsigned I type immediate and loop number. 
+
+
 2020-08-28  Jessica Mills  <jessica.mills@embecosm.com>
 
 	* elf/riscv.h: Added CORE-V hardware loop specific relocations.

@@ -951,7 +951,12 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case 'S':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	break;
       case 'U':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	/* fallthru */
       case 'T':	USE_BITS (OP_MASK_RS2,		OP_SH_RS2);	break;
-      case 'd':	USE_BITS (OP_MASK_RD,		OP_SH_RD);	if (*p == 'i') ++p; break;
+      case 'd':
+	if (*p == 'i') { /* TODO : CHANGE THIS */
+          used_bits |= ( 0xf00 |(ENCODE_I1TYPE_UIMM1(-1U))); /* Bits 11:08 preset to 0 */
+          ++p; break;
+	}
+	USE_BITS (OP_MASK_RD,		OP_SH_RD);	 break;
       case 'm':	USE_BITS (OP_MASK_RM,		OP_SH_RM);	break;
       case 's':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	break;
       case 't':	USE_BITS (OP_MASK_RS2,		OP_SH_RS2);	break;
@@ -2272,6 +2277,16 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      break;
 
 	    case 'd':		/* Destination register.  */
+		/* TODO : ADDED */
+	      if (args[1]=='i') {
+                ++args;
+                my_getExpression (imm_expr, s);
+                s = expr_end;
+                if (imm_expr->X_op != O_constant || imm_expr->X_add_number < 0 || imm_expr->X_add_number > 1)
+                        as_fatal (_("internal error: loop number must be 0 or 1 not %d"), imm_expr->X_add_number);
+                INSERT_OPERAND (IMM1, *ip, imm_expr->X_add_number);
+                continue;
+	      }
 	    case 's':		/* Source register.  */
 	    case 't':		/* Target register.  */
 	    case 'r':		/* rs3.  */
@@ -2289,12 +2304,6 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      INSERT_OPERAND (RS1, *ip, regno);
 		      break;
 		    case 'd':
-                      if (args[1]=='i') {
-                          ++args;
-                          if (regno>1)
-                                as_fatal (_("internal error: wrong loop number argument: x%d, range:[x0,x1]"),
-                                          (int) regno);
-                      }
 		      INSERT_OPERAND (RD, *ip, regno);
 		      break;
 		    case 't':
@@ -2361,17 +2370,9 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      continue;
 	    /* TODO: COREV MAY NOT NEED ALL OF THESE */
 	    case 'b':
-                /* b1: pc rel 12 bits offset for lp.starti and lp.endi sign-extended immediate as pc rel displacement for hwloop
+                /* TODO : CHANGE THIS
+		   b1: pc rel 12 bits offset for lp.starti and lp.endi sign-extended immediate as pc rel displacement for hwloop
                    b2: pc rel 5 bits unsigned offset for lp.setupi
-                   b3: 5 bits immediate for scallimm
-                   b5: 5 bits unsigned immediate bits[29..25]
-                   bi: 5 bits unsigned immediate bits[24..20]
-                   bI: 5 bits signed immediate bits[24..20]
-                   bs: 6 bits signed immediate for vector instructions
-                   bu: 6 bits unsigned immediate for vector instructions
-                   bU: 6 bits unsigned imm
-                   bf: 1 bit unsigned imm
-                   bF: 2 bits unsigned imm
                  */
               if (args[1]=='1') {
                 char *saved_s=s;
@@ -2380,10 +2381,10 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                 s = expr_end;
                 if (imm_expr->X_op == O_constant) {
                         if (imm_expr->X_add_number < 0 || ((imm_expr->X_add_number>>1) > 0x0FFF))
-                                as_fatal (_("internal error: %s constant too large for lp.start/lp.endi, range:[0, %d]"),
-                                  saved_s, 0x1FFF);
+                               as_fatal (_("internal error: %d constant out of range for cv.starti/cv.endi/cv.setup, range:[0, %d]"),
+                                  imm_expr->X_add_number, 0xFFE);
 			if ((imm_expr->X_add_number % 2) == 1) {
-                                as_warn (_("constant for lp.start/lp.endi must be even: %d trancated to %d"),
+                                as_warn (_("constant for cv.starti/cv.endi/cv.setup must be even: %d truncated to %d"),
                                   imm_expr->X_add_number, imm_expr->X_add_number-1);
 				imm_expr->X_add_number--;
 			}
@@ -2396,8 +2397,14 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                 s = expr_end;
                 if (imm_expr->X_op == O_constant) {
                         if (imm_expr->X_add_number < 0 || ((imm_expr->X_add_number>>1) > 31))
-                                as_fatal (_("internal error: %s constant too large for lp.setupi, range:[0, %d]"),
-                                  saved_s, 63);
+                                as_fatal (_("internal error: %d constant out of range for cv.setupi, range:[0, %d]"),
+                                  imm_expr->X_add_number, 0x1E);
+			if ((imm_expr->X_add_number % 2) == 1) {
+                                as_warn (_("constant for cv.setupi must be even: %d truncated to %d"),
+                                  imm_expr->X_add_number, imm_expr->X_add_number-1);
+                                imm_expr->X_add_number--;
+                        }
+
                         INSERT_OPERAND (IMM5, *ip, (imm_expr->X_add_number>>1));
                 } else *imm_reloc = BFD_RELOC_RISCV_RELU5;
               } else {

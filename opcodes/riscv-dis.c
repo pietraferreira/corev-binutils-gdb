@@ -313,7 +313,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	case 'j':
           if (d[1]=='i') {
              ++d;
-             print (info->stream, "%d", (int) EXTRACT_ITYPE_IMM (l));
+             print (info->stream, "%d", (int) EXTRACT_ITYPE_UIMM (l));
              break;
           }
 	  if (((l & MASK_ADDI) == MATCH_ADDI && rs1 != 0)
@@ -346,7 +346,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	    pd->hi_addr[rd] = EXTRACT_RVC_LUI_IMM (l);
           if (d[1]=='i') {
              ++d;
-             print (info->stream, "x%d", (int) rd);
+             print (info->stream, "%d", (int) rd);
           } else print (info->stream, "%s", riscv_gpr_names[rd]);
 
 	  break;
