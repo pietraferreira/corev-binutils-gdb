@@ -1,6 +1,6 @@
 #name: setupi relaxation
 #source: cv-hwloop-setupi.s
-#as: -march=rv32ixpulpv3
+#as: -march=rv32i_xcorev
 #ld: -melf32lriscv
 #objdump: -dr
 

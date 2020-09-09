@@ -1,5 +1,16 @@
 2020-09-09  Mary Bennett  <mary.bennett@embecosm.com>
 
+	* ld/testsuite/ld-riscv-elf/cv-endi.d: Changed xpulpv3 to xcorev.
+	* ld/testsuite/ld-riscv-elf/cv-endi.s: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setup.d: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setup.s: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setupi.d: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setupi.s: Same.
+	* ld/testsuite/ld-riscv-elf/cv-starti.d: Same.
+	* ld/testsuite/ld-riscv-elf/cv-starti.s: Same.
+
+2020-09-09  Mary Bennett  <mary.bennett@embecosm.com>
+
 	* ld/testsuite/ld-riscv-elf/cv-endi.d: Added new test.
 	* ld/testsuite/ld-riscv-elf/cv-endi.s: Same.
 	* ld/testsuite/ld-riscv-elf/cv-setup.d: Same.
