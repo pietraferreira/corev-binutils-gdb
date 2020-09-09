@@ -953,7 +953,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case 'T':	USE_BITS (OP_MASK_RS2,		OP_SH_RS2);	break;
       case 'd':
 	if (*p == 'i') { /* TODO : CHANGE THIS */
-          used_bits |= ( 0xf00 |(ENCODE_I1TYPE_UIMM1(-1U))); /* Bits 11:08 preset to 0 */
+          used_bits |= ( 0xf00 |(ENCODE_I1TYPE_LN(-1U))); /* Bits 11:08 preset to 0 */
           ++p; break;
 	}
 	USE_BITS (OP_MASK_RD,		OP_SH_RD);	 break;
@@ -2431,11 +2431,10 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                 my_getExpression (imm_expr, s);
                 check_absolute_expr (ip, imm_expr, FALSE); /* TODO : MADE THIS FALSE? */
                 s = expr_end;
-                if (imm_expr->X_op != O_constant || imm_expr->X_add_number >= (signed)RISCV_IMM_REACH ||
+                if (imm_expr->X_op != O_constant || imm_expr->X_add_number >= (int) RISCV_IMM_REACH ||
                     imm_expr->X_add_number < 0)
-                        as_fatal (_("internal error: non constant or too large lsetupi loop count %s, range:[0, %d["),
-                                  saved_s, (int) RISCV_IMM_REACH);
-
+                        as_fatal (_("internal error: %d constant out of range for cv.counti/cv.setupi, range:[0, %d]"),
+                                  imm_expr->X_add_number, ((int) RISCV_IMM_REACH) -1);
                 INSERT_OPERAND (IMM12, *ip, imm_expr->X_add_number);
                 continue;
               } else {

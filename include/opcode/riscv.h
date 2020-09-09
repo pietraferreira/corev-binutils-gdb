@@ -103,7 +103,7 @@ static const char * const riscv_pred_succ[16] =
 /* TODO (PULP): Add PULP ITYPEs */
 #define EXTRACT_I1TYPE_UIMM(x) \
   (RV_X(x, 15, 5))
-#define EXTRACT_I1TYPE_UIMM1(x) \
+#define EXTRACT_I1TYPE_LN(x) \
   (RV_X(x, 7, 1))
 /* TODO : SEE IF YOU CAN CHANGED ANYWHERE THAT IS ji to this extract for consistency*/
 #define EXTRACT_ITYPE_UIMM(x) \
@@ -151,7 +151,7 @@ static const char * const riscv_pred_succ[16] =
 /* TODO (PULP): Add PULP ITYPEs */
 #define ENCODE_I1TYPE_UIMM(x) \
   (RV_X(x, 0, 5) << 15)
-#define ENCODE_I1TYPE_UIMM1(x) \
+#define ENCODE_I1TYPE_LN(x) \
   (RV_X(x, 0, 1) << 7)
 
 
@@ -175,9 +175,6 @@ static const char * const riscv_pred_succ[16] =
 #define VALID_RVC_B_IMM(x) (EXTRACT_RVC_B_IMM(ENCODE_RVC_B_IMM(x)) == (x))
 #define VALID_RVC_J_IMM(x) (EXTRACT_RVC_J_IMM(ENCODE_RVC_J_IMM(x)) == (x))
 
-/* TODO (PULP): Add PULP ITYPEs */
-#define VALID_I1TYPE_UIMM(x) (EXTRACT_I1TYPE_UIMM(ENCODE_I1TYPE_UIMM(x)) == (x))
-#define VALID_I1TYPE_UIMM1(x) (EXTRACT_I1TYPE_UIMM1(ENCODE_I1TYPE_UIMM1(x)) == (x))
 
 #define RISCV_RTYPE(insn, rd, rs1, rs2) \
   ((MATCH_ ## insn) | ((rd) << OP_SH_RD) | ((rs1) << OP_SH_RS1) | ((rs2) << OP_SH_RS2))

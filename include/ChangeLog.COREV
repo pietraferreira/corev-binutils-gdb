@@ -1,10 +1,18 @@
+2020-09-09  Jessica Mills  <jessica.mills@embecosm.com>
+
+	* opcode/riscv.h: Changed macro names for loop number and removed
+	unused VALID macros.
+
 2020-09-07  Jessica Mills  <jessica.mills@embecosm.com>
 
-	* opcode/riscv.h: Added macros for unsigned I type immediate and loop number. 
-
+	* opcode/riscv.h: Added macros for unsigned I type immediate and loop number.
 
 2020-08-28  Jessica Mills  <jessica.mills@embecosm.com>
 
 	* elf/riscv.h: Added CORE-V hardware loop specific relocations.
 	* opcode/riscv.h: Added CORE-V hardware loop specific masks and
 	CORE-V instruction class.
+
+2020-08-21  Mary Bennett  <mary.bennett@embecosm.com>
+
+	* opcode/riscv-opc.h: Added CORE-V support.
