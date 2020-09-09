@@ -855,7 +855,7 @@ static reloc_howto_type howto_table[] =
 	 MINUS_ONE,			/* dst_mask */
 	 FALSE),			/* pcrel_offset */
 
-  /* Pulp specific */
+  /* CORE-V Specific.  */
   /* 12-bit PC-relative offset, for hwloop.  */
   HOWTO (R_RISCV_REL12,                 /* type */
          1,                             /* rightshift */
@@ -948,7 +948,7 @@ static const struct elf_reloc_map riscv_reloc_map[] =
   { BFD_RELOC_RISCV_SET16, R_RISCV_SET16 },
   { BFD_RELOC_RISCV_SET32, R_RISCV_SET32 },
   { BFD_RELOC_RISCV_32_PCREL, R_RISCV_32_PCREL },
-  /* Pulp specific */
+  /* CORE-V Specific.  */
   { BFD_RELOC_RISCV_REL12, R_RISCV_REL12 },
   { BFD_RELOC_RISCV_RELU5, R_RISCV_RELU5 },
 };
