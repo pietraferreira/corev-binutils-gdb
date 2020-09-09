@@ -1,3 +1,9 @@
+2020-09-09  Mary Bennett  <mary.bennett@embecosm.com>
+
+	* ld/testsuite/ld-riscv-elf/starti.s: Added new test.
+	* ld/testsuite/ld-riscv-elf/starti.d: Same.
+	* ld/testsuite/ld-riscv-elf/ld-riscv-elf.exp: Same.
+
 2020-08-28  Jessica Mills  <jessica.mills@embecosm.com>
 
 	* emultempl/riscvelf.em: Added CORE-V hardware loop support.
