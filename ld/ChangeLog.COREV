@@ -1,5 +1,18 @@
 2020-09-09  Mary Bennett  <mary.bennett@embecosm.com>
 
+	* ld/testsuite/ld-riscv-elf/cv-endi.d: Added new test.
+	* ld/testsuite/ld-riscv-elf/cv-endi.s: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setup.d: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setup.s: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setupi.d: Same.
+	* ld/testsuite/ld-riscv-elf/cv-setupi.s: Same.
+	* ld/testsuite/ld-riscv-elf/ld-riscv-elf.exp: Added the new tests.
+	* ld/testsuite/ld-riscv-elf/cv-starti.d: Renamed from starti.d.
+	* ld/testsuite/ld-riscv-elf/cv-starti.s: Renamed from starti.s.
+
+
+2020-09-09  Mary Bennett  <mary.bennett@embecosm.com>
+
 	* ld/testsuite/ld-riscv-elf/starti.s: Added new test.
 	* ld/testsuite/ld-riscv-elf/starti.d: Same.
 	* ld/testsuite/ld-riscv-elf/ld-riscv-elf.exp: Same.
