@@ -266,6 +266,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	  break;
 
 	case 'b':
+	  /* CORE-V Specific.  */
 	  if (d[1]=='1') {
              info->target = (EXTRACT_ITYPE_IMM (l)<<1) + pc; ++d;
              (*info->print_address_func) (info->target, info);
@@ -311,6 +312,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	  maybe_print_address (pd, rs1, EXTRACT_ITYPE_IMM (l));
 	  /* Fall through.  */
 	case 'j':
+	  /* CORE-V Specific.  */
           if (d[1]=='i') {
              ++d;
              print (info->stream, "%d", (int) EXTRACT_ITYPE_UIMM (l));

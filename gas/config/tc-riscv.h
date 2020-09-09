@@ -117,7 +117,7 @@ extern int tc_riscv_regname_to_dw2regnum (char *);
 #define elf_tc_final_processing riscv_elf_final_processing
 extern void riscv_elf_final_processing (void);
 
-/* TODO: DO WE NEED THIS */
+/* CORE-V Specific.  */
 extern void pulp_md_end (void);
 #define pulp_md_end()
 

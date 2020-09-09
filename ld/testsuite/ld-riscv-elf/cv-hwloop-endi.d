@@ -1,5 +1,5 @@
 #name: endi relaxation
-#source: cv-endi.s
+#source: cv-hwloop-endi.s
 #as: -march=rv32ixpulpv3
 #ld: -melf32lriscv
 #objdump: -dr

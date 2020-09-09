@@ -780,10 +780,8 @@ const struct riscv_opcode riscv_opcodes[] =
 {"sfence.vma", 0, INSN_CLASS_I,   "s,t",  MATCH_SFENCE_VMA, MASK_SFENCE_VMA, match_opcode, 0 },
 {"wfi",        0, INSN_CLASS_I,   "",     MATCH_WFI, MASK_WFI, match_opcode, 0 },
 
-/* PULP specific opcodes */
-/* TODO : COREV i.e. PULP v3 */
-/* Hardware loops */
-
+/* CORE-V Specific Opcodes.  */
+/* Hardware loops  */
 {"cv.starti", 0, INSN_CLASS_COREV, "di,b1",    	MATCH_HWLP_STARTI, MASK_HWLP_STARTI,match_opcode, 0},
 {"cv.endi",   0, INSN_CLASS_COREV, "di,b1",    	MATCH_HWLP_ENDI,   MASK_HWLP_ENDI,  match_opcode, 0},
 {"cv.count",  0, INSN_CLASS_COREV, "di,s",     	MATCH_HWLP_COUNT,  MASK_HWLP_COUNT, match_opcode, 0},

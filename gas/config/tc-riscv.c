@@ -229,7 +229,7 @@ riscv_multi_subset_supports (enum riscv_insn_class insn_class)
     case INSN_CLASS_D: return riscv_subset_supports ("d");
     case INSN_CLASS_D_AND_C:
       return riscv_subset_supports ("d") && riscv_subset_supports ("c");
-    /* TODO : IS THIS CORRECT */
+    /* TODO : CHANGE TO COREV */
     case INSN_CLASS_COREV:  return riscv_subset_supports ("xpulpv");
     case INSN_CLASS_F_AND_C:
       return riscv_subset_supports ("f") && riscv_subset_supports ("c");
@@ -973,7 +973,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case '[': break;
       case ']': break;
       case '0': break;
-      /* TODO : MAY NOT NEED ALL OF THESE */
+      /* CORE-V Specific.  */
       case 'b':
                 if (*p == '1') {
                         used_bits |= ENCODE_ITYPE_IMM(-1U); /* For loop I type pc rel displacement */
@@ -2277,7 +2277,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      break;
 
 	    case 'd':		/* Destination register.  */
-		/* TODO : ADDED */
+	      /* CORE-V Specific.  */
 	      if (args[1]=='i') {
                 ++args;
                 my_getExpression (imm_expr, s);
@@ -2368,12 +2368,10 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      *imm_reloc = BFD_RELOC_32;
 	      s = expr_end;
 	      continue;
-	    /* TODO: COREV MAY NOT NEED ALL OF THESE */
-	    case 'b':
-                /* TODO : CHANGE THIS
-		   b1: pc rel 12 bits offset for lp.starti and lp.endi sign-extended immediate as pc rel displacement for hwloop
-                   b2: pc rel 5 bits unsigned offset for lp.setupi
-                 */
+	    /* CORE-V Specific.  
+	       b1: pc rel 12 bits offset for cv.starti and cv.endi sign-extended immediate as pc rel displacement for hwloop
+               b2: pc rel 5 bits unsigned offset for cv.setupi  */
+	    case 'b':		   
               if (args[1]=='1') {
                 char *saved_s=s;
                 ++args;
@@ -2422,14 +2420,14 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	        *imm_reloc = BFD_RELOC_32;
 	      s = expr_end;
 	      continue;
-	    /* TODO : Put this is for ji pulp */
+	    /* CORE-V Specific.  */
 	    case 'j': /* Sign-extended immediate.  */
 	      if (args[1]=='i') {
                 /* immediate loop count, we don't want to use BFD_RELOC_RISCV_LO12_I to avoid colliding with relaxation */
                 char *saved_s=s;
                 ++args;
                 my_getExpression (imm_expr, s);
-                check_absolute_expr (ip, imm_expr, FALSE); /* TODO : MADE THIS FALSE? */
+                check_absolute_expr (ip, imm_expr, FALSE);
                 s = expr_end;
                 if (imm_expr->X_op != O_constant || imm_expr->X_add_number >= (int) RISCV_IMM_REACH ||
                     imm_expr->X_add_number < 0)
@@ -3089,6 +3087,7 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
 	}
       break;
 
+    /* CORE-V Specific.  */	
     case BFD_RELOC_RISCV_REL12:
       if (fixP->fx_addsy)
         {

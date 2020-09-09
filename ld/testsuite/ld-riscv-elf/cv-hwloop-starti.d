@@ -1,5 +1,5 @@
 #name: starti relaxation
-#source: cv-starti.s
+#source: cv-hwloop-starti.s
 #as: -march=rv32ixpulpv3
 #ld: -melf32lriscv
 #objdump: -dr

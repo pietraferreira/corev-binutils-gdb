@@ -1327,14 +1327,14 @@ perform_relocation (const reloc_howto_type *howto,
       value = ENCODE_UTYPE_IMM (RISCV_CONST_HIGH_PART (value));
       break;
 
-    /* Pulp specific relocs */
+    /* CORE-V Specific Relocations.  */
     case R_RISCV_REL12:
       value = ENCODE_ITYPE_IMM (value>>howto->rightshift);
       break;
     case R_RISCV_RELU5:
       value = ENCODE_I1TYPE_UIMM (value>>howto->rightshift);
       break;
-    /* End of Pulp specific relocs */
+    /* End of CORE-V Specific Relocations.  */
 
     case R_RISCV_LO12_I:
     case R_RISCV_GPREL_I:
