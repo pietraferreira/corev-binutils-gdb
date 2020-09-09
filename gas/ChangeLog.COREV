@@ -1,5 +1,9 @@
 2020-09-07  Jessica Mills  <jessica.mills@embecosm.com>
 
+	* config/tc-riscv.c: Corrected unsigned immediate error message.
+
+2020-09-07  Jessica Mills  <jessica.mills@embecosm.com>
+
 	* config/tc-riscv.c: Changed loop number operand to be a non-register
 	type and corrected ranges in error messages.
 

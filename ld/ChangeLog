@@ -1,7 +1,3 @@
-2020-08-21  Mary Bennett  <mary.bennett@embecosm.com>
-
-	* emultempl/riscvelf.em: Added initial PULP support.
-
 2020-08-16  Alan Modra  <amodra@gmail.com>
 
 	* testsuite/ld-powerpc/inline.s,

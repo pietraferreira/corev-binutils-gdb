@@ -1,9 +1,3 @@
-2020-08-21  Mary Bennett  <mary.bennett@embecosm.com>
-
-	* config/tc-riscv.c: Added initial PULP support and instruction
-	classes. 
-	* config/tc-riscv.h: Likewise. 
-
 2020-08-17  Alex Coplan  <alex.coplan@arm.com>
 
 	* config/obj-elf.c (obj_elf_change_section): When repurposing an
