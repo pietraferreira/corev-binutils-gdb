@@ -843,6 +843,7 @@
 #define CSR_MCONTEXT 0x7a8
 #define CSR_SCONTEXT 0x7aa
 #endif /* RISCV_ENCODING_H.  */
+
 /* CORE-V Specific Instructions  */
 /* Hardware loops  */
 #define MASK_HWLP_STARTI 0x000ff07f

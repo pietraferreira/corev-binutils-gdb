@@ -1,3 +1,7 @@
+2020-09-10 Pietra Ferreira <pietra.ferreira@embecosm.com>
+
+	* gas/config/tc-riscv.h: Removed dead code.
+
 2020-09-09  Mary Bennett  <mary.bennett@embecosm.com>
 
 	* gas/config/tc-riscv.c: Changed xpulpv to xcorev.
@@ -26,6 +30,22 @@
 
 	* config/tc-riscv.c: Changed loop number operand to be a non-register
 	type and corrected ranges in error messages.
+	* gas/testsuite/gas/riscv/cv-hwloop-01.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-02.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-03.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-04.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-05.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-06.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-07.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-08.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-09.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-10.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-count.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-counti.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-endi.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-setup.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-setupi.d: Created.
+	* gas/testsuite/gas/riscv/cv-hwloop-starti.d: Created.
 
 2020-08-28  Jessica Mills  <jessica.mills@embecosm.com>
 

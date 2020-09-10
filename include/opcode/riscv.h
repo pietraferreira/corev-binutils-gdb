@@ -153,7 +153,6 @@ static const char * const riscv_pred_succ[16] =
 #define ENCODE_I1TYPE_LN(x) \
   (RV_X(x, 0, 1) << 7)
 
-
 #define VALID_ITYPE_IMM(x) (EXTRACT_ITYPE_IMM(ENCODE_ITYPE_IMM(x)) == (x))
 #define VALID_STYPE_IMM(x) (EXTRACT_STYPE_IMM(ENCODE_STYPE_IMM(x)) == (x))
 #define VALID_SBTYPE_IMM(x) (EXTRACT_SBTYPE_IMM(ENCODE_SBTYPE_IMM(x)) == (x))
@@ -243,8 +242,8 @@ static const char * const riscv_pred_succ[16] =
 #define OP_SH_IMM12             20
 #define OP_MASK_IMM5            0x1f
 #define OP_SH_IMM5              15
-#define OP_MASK_IMM1            0x1  // TODO: ADDED BY JM//
-#define OP_SH_IMM1              7
+#define OP_MASK_LN              0x1
+#define OP_SH_LN                7
 
 #define OP_MASK_CUSTOM_IMM	0x7f
 #define OP_SH_CUSTOM_IMM	25
