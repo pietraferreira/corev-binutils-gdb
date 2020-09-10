@@ -316,7 +316,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	  /* Fall through.  */
 	/* CORE-V Specific.  */       
 	case 'j':
-	  if (d[1]=='i')
+	  if (d[1] == 'i')
 	    {
 	      ++d;
 	      print (info->stream, "%d", (int) EXTRACT_ITYPE_UIMM (l));
@@ -350,7 +350,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	    pd->hi_addr[rd] = EXTRACT_UTYPE_IMM (l);
 	  else if ((l & MASK_C_LUI) == MATCH_C_LUI)
 	    pd->hi_addr[rd] = EXTRACT_RVC_LUI_IMM (l);
-	  if (d[1]=='i')
+	  if (d[1] == 'i')
 	    {
 	      ++d;
 	      print (info->stream, "%d", (int) rd);

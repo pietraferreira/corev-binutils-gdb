@@ -1,3 +1,11 @@
+2020-09-10  Pietra Ferreira  <pietra.ferreira@embecosm.com>
+
+	* config/tc-riscv.c (validate_riscv_insn): Cleaned up layout.
+	(riscv_ip): Likewise.
+	(md_apply_fix): Likewise.
+	* doc/c-riscv.texi: Noted Xcorev as additional ISA extension for
+	CORE-V.
+
 2020-09-10 Pietra Ferreira <pietra.ferreira@embecosm.com>
 
 	* gas/config/tc-riscv.h: Removed dead code.
