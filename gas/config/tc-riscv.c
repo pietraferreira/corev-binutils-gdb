@@ -229,8 +229,8 @@ riscv_multi_subset_supports (enum riscv_insn_class insn_class)
     case INSN_CLASS_D: return riscv_subset_supports ("d");
     case INSN_CLASS_D_AND_C:
       return riscv_subset_supports ("d") && riscv_subset_supports ("c");
-    /* TODO : CHANGE TO COREV */
-    case INSN_CLASS_COREV:  return riscv_subset_supports ("xpulpv");
+
+    case INSN_CLASS_COREV:  return riscv_subset_supports ("xcorev");
     case INSN_CLASS_F_AND_C:
       return riscv_subset_supports ("f") && riscv_subset_supports ("c");
 

@@ -1,3 +1,23 @@
+2020-09-09  Mary Bennett  <mary.bennett@embecosm.com>
+
+	* gas/config/tc-riscv.c: Changed xpulpv to xcorev.
+	* gas/testsuite/gas/riscv/cv-hwloop-01.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-02.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-03.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-04.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-05.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-06.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-07.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-08.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-09.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-10.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-count.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-counti.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-endi.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-setup.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-setupi.d: Same.
+	* gas/testsuite/gas/riscv/cv-hwloop-starti.d: Same.
+
 2020-09-07  Jessica Mills  <jessica.mills@embecosm.com>
 
 	* config/tc-riscv.c: Corrected unsigned immediate error message.

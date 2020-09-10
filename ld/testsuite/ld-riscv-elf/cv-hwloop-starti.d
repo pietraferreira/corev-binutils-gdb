@@ -1,6 +1,6 @@
 #name: starti relaxation
 #source: cv-hwloop-starti.s
-#as: -march=rv32ixpulpv3
+#as: -march=rv32i_xcorev
 #ld: -melf32lriscv
 #objdump: -dr
 
