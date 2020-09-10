@@ -885,7 +885,6 @@ static reloc_howto_type howto_table[] =
          0,                             /* src_mask */
          ENCODE_I1TYPE_UIMM (-1U),      /* dst_mask */
          TRUE),                         /* pcrel_offset */
-
 };
 
 /* A mapping from BFD reloc types to RISC-V ELF reloc types.  */

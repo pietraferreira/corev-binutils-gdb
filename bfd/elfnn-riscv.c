@@ -1331,10 +1331,10 @@ perform_relocation (const reloc_howto_type *howto,
     case R_RISCV_REL12:
       value = ENCODE_ITYPE_IMM (value>>howto->rightshift);
       break;
+
     case R_RISCV_RELU5:
       value = ENCODE_I1TYPE_UIMM (value>>howto->rightshift);
       break;
-    /* End of CORE-V Specific Relocations.  */
 
     case R_RISCV_LO12_I:
     case R_RISCV_GPREL_I:
@@ -1753,15 +1753,13 @@ riscv_elf_relocate_section (bfd *output_bfd,
 	case R_RISCV_RVC_LUI:
 	case R_RISCV_LO12_I:
 	case R_RISCV_LO12_S:
-
 	case R_RISCV_SET6:
 	case R_RISCV_SET8:
 	case R_RISCV_SET16:
 	case R_RISCV_SET32:
 	case R_RISCV_32_PCREL:
 	case R_RISCV_DELETE:
-
-	/* Pulp specific */
+	/* CORE-V Specific.  */
         case R_RISCV_RELU5:
         case R_RISCV_REL12:
 	  /* These require no special handling beyond perform_relocation.  */
