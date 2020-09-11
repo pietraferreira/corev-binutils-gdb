@@ -954,8 +954,9 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case 'd':
 	if (*p == 'i')
 	  {
-	    used_bits |= ( 0xf00 |(ENCODE_I1TYPE_LN(-1U))); /* Bits 11:08 preset to 0 */
-	    ++p; break;
+	    used_bits |= (0xf00 |(ENCODE_I1TYPE_LN(-1U))); /* Bits 11:08 preset to 0 */
+	    ++p; 
+	    break;
 	  }
 	USE_BITS (OP_MASK_RD,		OP_SH_RD);	break;
       case 'm':	USE_BITS (OP_MASK_RM,		OP_SH_RM);	break;
@@ -2280,13 +2281,15 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		}
 	      break;
 	    case 'd':		/* CORE-V hwloop number.  */
-	      if (args[1]=='i')
+	      if (args[1] == 'i')
 		{
 		  ++args;
 		  my_getExpression (imm_expr, s);
 		  s = expr_end;
-		  if (imm_expr->X_op != O_constant || imm_expr->X_add_number < 0 || imm_expr->X_add_number > 1)
-		    as_fatal (_("internal error: loop number must be 0 or 1 not %d"), imm_expr->X_add_number);
+		  if (imm_expr->X_op != O_constant || imm_expr->X_add_number < 0 
+			|| imm_expr->X_add_number > 1)
+		    as_fatal (_("internal error: loop number must be 0 or 1 not %d"),
+			imm_expr->X_add_number);
 		  INSERT_OPERAND (LN, *ip, imm_expr->X_add_number);
 		  continue;
 		}
@@ -2376,7 +2379,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	             sign-extended immediate as pc rel displacement for hwloop
 	         b2: pc rel 5 bits unsigned offset for cv.setupi  */
 	    case 'b':		   
-	      if (args[1]=='1')
+	      if (args[1] == '1')
 		{
 		  char *saved_s=s;
 		  ++args;
@@ -2385,19 +2388,21 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		  if (imm_expr->X_op == O_constant)
 		    {
 		      if (imm_expr->X_add_number < 0 || ((imm_expr->X_add_number>>1) > 0x0FFF))
-		      	as_fatal (_("internal error: %d constant out of range for cv.starti/cv.endi/cv.setup, range:[0, %d]"),
-				imm_expr->X_add_number, 0xFFE);
+		      	as_fatal (_("internal error: %d constant out of range for "
+				    "cv.starti/cv.endi/cv.setup, range:[0, %d]"),
+				  imm_expr->X_add_number, 0xFFE);
 		      if ((imm_expr->X_add_number % 2) == 1)
 		    	{
-			  as_warn (_("constant for cv.starti/cv.endi/cv.setup must be even: %d truncated to %d"),
-			  	imm_expr->X_add_number, imm_expr->X_add_number-1);
+			  as_warn (_("constant for cv.starti/cv.endi/cv.setup "
+				     "must be even: %d truncated to %d"),
+			  	   imm_expr->X_add_number, imm_expr->X_add_number-1);
 			  imm_expr->X_add_number--;
 			}
 		      INSERT_OPERAND (IMM12, *ip, (imm_expr->X_add_number>>1));
 		    }
 		  else *imm_reloc = BFD_RELOC_RISCV_REL12;
 		}
-	      else if (args[1]=='2')
+	      else if (args[1] == '2')
 		{
 		  char *saved_s=s;
 		  ++args;
@@ -2436,7 +2441,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      continue;
 	    /* CORE-V Specific.  */
 	    case 'j': /* Unsigned immediate.  */
-	      if (args[1]=='i')
+	      if (args[1] == 'i')
 		{
 		  /* immediate loop count, we don't want to use BFD_RELOC_RISCV_LO12_I to avoid colliding with relaxation */
 		  char *saved_s=s;
@@ -3131,7 +3136,7 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
 	  bfd_vma target = S_GET_VALUE (fixP->fx_addsy) + *valP;
 	  bfd_vma delta = (target - md_pcrel_from (fixP)) >> howto->rightshift;
 	  r = bfd_check_overflow (howto->complain_on_overflow, 5, 0, 32, delta);
-	  if (r==bfd_reloc_overflow)
+	  if (r == bfd_reloc_overflow)
 	    as_fatal (_("BFD_RELOC_RISCV_RELU5 Overflow: Disp=%d"), (int) delta);
 	  bfd_putl32 (bfd_getl32 (buf) | ENCODE_I1TYPE_UIMM (delta), buf);
 	}
