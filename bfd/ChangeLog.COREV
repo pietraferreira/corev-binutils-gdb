@@ -1,0 +1,5 @@
+2020-09-10  Pietra Ferreira  <pietra.ferreira@embecosm.com>
+
+	* bfd-in2.h: Added CORE-V hardware loop specific relocations.
+	* elfnn-riscv.c: Added relocations for CORE-V hardware loop. 
+	* elfxx-riscv.c: Likewise.

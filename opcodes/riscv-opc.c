@@ -780,6 +780,15 @@ const struct riscv_opcode riscv_opcodes[] =
 {"sfence.vma", 0, INSN_CLASS_I,   "s,t",  MATCH_SFENCE_VMA, MASK_SFENCE_VMA, match_opcode, 0 },
 {"wfi",        0, INSN_CLASS_I,   "",     MATCH_WFI, MASK_WFI, match_opcode, 0 },
 
+/* CORE-V Specific Opcodes.  */
+/* Hardware loops  */
+{"cv.starti", 0, INSN_CLASS_COREV, "di,b1",    	MATCH_HWLP_STARTI, MASK_HWLP_STARTI,match_opcode, 0},
+{"cv.endi",   0, INSN_CLASS_COREV, "di,b1",    	MATCH_HWLP_ENDI,   MASK_HWLP_ENDI,  match_opcode, 0},
+{"cv.count",  0, INSN_CLASS_COREV, "di,s",     	MATCH_HWLP_COUNT,  MASK_HWLP_COUNT, match_opcode, 0},
+{"cv.counti", 0, INSN_CLASS_COREV, "di,ji",    	MATCH_HWLP_COUNTI, MASK_HWLP_COUNTI,match_opcode, 0},
+{"cv.setup",  0, INSN_CLASS_COREV, "di,s,b1",  	MATCH_HWLP_SETUP,  MASK_HWLP_SETUP, match_opcode, 0},
+{"cv.setupi", 0, INSN_CLASS_COREV, "di,ji,b2", 	MATCH_HWLP_SETUPI, MASK_HWLP_SETUPI,match_opcode, 0},
+
 /* Terminate the list.  */
 {0, 0, INSN_CLASS_NONE, 0, 0, 0, 0, 0}
 };
