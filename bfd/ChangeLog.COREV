@@ -1,3 +1,8 @@
+2020-09-11  Simon Cook  <simon.cook@embecosm.com>
+
+	* bfd/elfxx-riscv.c (riscv_reloc_type_lookup): Call
+	to do howto lookup.
+
 2020-09-10  Pietra Ferreira  <pietra.ferreira@embecosm.com>
 
 	* bfd-in2.h: Added CORE-V hardware loop specific relocations.
