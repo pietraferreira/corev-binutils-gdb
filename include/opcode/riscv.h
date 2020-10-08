@@ -2,6 +2,13 @@
    Copyright (C) 2011-2020 Free Software Foundation, Inc.
    Contributed by Andrew Waterman
 
+   Modified for CORE-V by:
+   Mary Bennett (mary.bennett@embecosm.com)
+   Pietra Ferreira (pietra.ferreira@embecosm.com)
+   Jessica Mills (jessica.mills@embecosm.com)
+
+   Some of these changes are (C) Open Hardware Group, pending FSF assignment.
+
    This file is part of GDB, GAS, and the GNU binutils.
 
    GDB, GAS, and the GNU binutils are free software; you can redistribute

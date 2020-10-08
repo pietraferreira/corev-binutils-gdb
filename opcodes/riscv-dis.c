@@ -4,6 +4,13 @@
    Contributed by Andrew Waterman (andrew@sifive.com).
    Based on MIPS target.
 
+   Modified for CORE-V by:
+   Mary Bennett (mary.bennett@embecosm.com)
+   Pietra Ferreira (pietra.ferreira@embecosm.com)
+   Jessica Mills (jessica.mills@embecosm.com)
+
+   Some of these changes are (C) Open Hardware Group, pending FSF assignment.
+
    This file is part of the GNU opcodes library.
 
    This library is free software; you can redistribute it and/or modify
@@ -316,6 +323,10 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	  /* Fall through.  */
 	/* CORE-V Specific.  */       
 	case 'j':
+<<<<<<< HEAD
+=======
+		/* ji is CORE-V Specific.  */
+>>>>>>> 6a9bfdca8a40cf00166330ca8cbe86ac8ba516b3
 	  if (d[1] == 'i')
 	    {
 	      ++d;
@@ -355,7 +366,12 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	      ++d;
 	      print (info->stream, "%d", (int) rd);
 	    }
+<<<<<<< HEAD
 	  else print (info->stream, "%s", riscv_gpr_names[rd]);
+=======
+	  else
+	   print (info->stream, "%s", riscv_gpr_names[rd]);
+>>>>>>> 6a9bfdca8a40cf00166330ca8cbe86ac8ba516b3
 	  break;
 
 	case 'z':

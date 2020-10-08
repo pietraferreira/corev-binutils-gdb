@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #name: endi relaxation
+=======
+#name: endi relocation
+>>>>>>> 6a9bfdca8a40cf00166330ca8cbe86ac8ba516b3
 #source: cv-hwloop-endi.s
 #as: -march=rv32i_xcorev
 #ld: -melf32lriscv
