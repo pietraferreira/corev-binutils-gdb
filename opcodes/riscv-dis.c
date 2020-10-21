@@ -286,7 +286,12 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	      (*info->print_address_func) (info->target, info);
 	      break;
 	    }
-	/* Fall through.  */
+	  else if (d[1] == '3')
+	    {
+	      print (info->stream, "%d", ((int) EXTRACT_CV_MAC_UIMM5 (l)));
+	      ++d;
+	      break;
+	    }
 	case 's':
 	  if ((l & MASK_JALR) == MATCH_JALR)
 	    maybe_print_address (pd, rs1, 0);
