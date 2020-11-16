@@ -824,6 +824,25 @@ const struct riscv_opcode riscv_opcodes[] =
 {"cv.macurn",	0, INSN_CLASS_COREV_MAC, "d,s,t,b3",	MATCH_MACURN,	MASK_MULMACN,	match_opcode,	0},
 {"cv.machhurn",	0, INSN_CLASS_COREV_MAC, "d,s,t,b3",	MATCH_MACHHURN,	MASK_MULMACN,	match_opcode,	0},
 
+/* ALU */
+{"cv.abs",    0, INSN_CLASS_COREV_MAC, "d,s",      MATCH_ABS,    MASK_ABS,    match_opcode,   0},
+{"cv.slet",   0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_SLET,   MASK_SLET,   match_opcode,   0},
+{"cv.sletu",  0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_SLETU,  MASK_SLET,   match_opcode,   0},
+{"cv.min",    0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_MIN,    MASK_SLET,   match_opcode,   0},
+{"cv.minu",   0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_MINU,   MASK_SLET,   match_opcode,   0},
+{"cv.max",    0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_MAX,    MASK_SLET,   match_opcode,   0},
+{"cv.maxu",   0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_MAXU,   MASK_SLET,   match_opcode,   0},
+{"cv.exths",  0, INSN_CLASS_COREV_MAC, "d,s",      MATCH_MIN,    MASK_ABS,    match_opcode,   0},
+{"cv.exthz",  0, INSN_CLASS_COREV_MAC, "d,s",      MATCH_MINU,   MASK_ABS,    match_opcode,   0},
+{"cv.extbs",  0, INSN_CLASS_COREV_MAC, "d,s",      MATCH_MAX,    MASK_ABS,    match_opcode,   0},
+{"cv.extbz",  0, INSN_CLASS_COREV_MAC, "d,s",      MATCH_MAXU,   MASK_ABS,    match_opcode,   0},
+{"cv.clip",   0, INSN_CLASS_COREV_MAC, "d,s,bi",   MATCH_CLIP,   MASK_SLET,   match_opcode,   0},
+{"cv.clipu",  0, INSN_CLASS_COREV_MAC, "d,s,bi",   MATCH_CLIPU,  MASK_SLET,   match_opcode,   0},
+{"cv.clipr",  0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_CLIPU,  MASK_SLET,   match_opcode,   0},
+{"cv.clipur", 0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_CLIPUR, MASK_SLET,   match_opcode,   0},
+{"cv.addn",   0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_ADDN,   MASK_ADDN,   match_opcode,   0},
+{"cv.addun",  0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_ADDUN,  MASK_ADDN,   match_opcode,   0},
+
 /* Terminate the list.  */
 {0, 0, INSN_CLASS_NONE, 0, 0, 0, 0, 0}
 };
