@@ -842,6 +842,19 @@ const struct riscv_opcode riscv_opcodes[] =
 {"cv.clipur", 0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_CLIPUR, MASK_SLET,   match_opcode,   0},
 {"cv.addn",   0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_ADDN,   MASK_ADDN,   match_opcode,   0},
 {"cv.addun",  0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_ADDUN,  MASK_ADDN,   match_opcode,   0},
+{"cv.addrn",  0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_ADDRN,  MASK_ADDN,   match_opcode,   0}
+{"cv.addurn", 0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_ADDURN, MASK_ADDN,   match_opcode,   0}
+{"cv.addnr",  0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_ADDNR,  MASK_SLET,   match_opcode,   0}
+{"cv.addrnr", 0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_ADDRNR, MASK_SLET,   match_opcode,   0}
+{"cv.addurnr",0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_ADDURNR,MASK_SLET,   match_opcode,   0}
+{"cv.subn",   0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_SUBN,   MASK_ADDN,   match_opcode,   0}
+{"cv.subun",  0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_SUBUN,  MASK_ADDN,   match_opcode,   0}
+{"cv.subrn",  0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_SUBRN,  MASK_ADDN,   match_opcode,   0}
+{"cv.suburn", 0, INSN_CLASS_COREV_MAC, "d,s,t,b3", MATCH_SUBURN, MASK_ADDN,   match_opcode,   0}
+{"cv.subnr",  0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_SUBNR,  MASK_SLET,   match_opcode,   0}
+{"cv.subunr", 0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_SUBUNR, MASK_SLET,   match_opcode,   0}
+{"cv.subrnr", 0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_SUBRNR, MASK_SLET,   match_opcode,   0}
+{"cv.suburnr",0, INSN_CLASS_COREV_MAC, "d,s,t",    MATCH_SUBURNR,MASK_SLET,   match_opcode,   0}
 
 /* Terminate the list.  */
 {0, 0, INSN_CLASS_NONE, 0, 0, 0, 0, 0}
